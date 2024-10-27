@@ -1,6 +1,6 @@
-import { BookCheck, Bot, LogIn, LogOut } from "lucide-react";
+import { BookCheck, Bot, LogIn, LogOut, CloudCog } from "lucide-react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import logo from '../assets/kavach.png'
+import logo from "../assets/kavach.png";
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -19,15 +19,18 @@ const Navbar = () => {
         // The signed-in user info.
         const user = result.user;
         localStorage.setItem("email", user.email);
-        const res = await axios.post("http://localhost:5000/api/user", { email: user.email });
+        const res = await axios.post("http://localhost:3000/api/user", {
+          email: user.email,
+        });
         console.log(res.data);
         // console.log(user)
-        sessionStorage.setItem("userEmail",user.email)
-        sessionStorage.setItem("name",user?.displayName)
-        sessionStorage.setItem("photo",user?.photoURL)
+        sessionStorage.setItem("userEmail", user.email);
+        sessionStorage.setItem("name", user?.displayName);
+        sessionStorage.setItem("photo", user?.photoURL);
         // IdP data available using getAdditionalUserInfo(result)
         // ...
-      }).catch((error) => {
+      })
+      .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -37,7 +40,7 @@ const Navbar = () => {
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
       });
-  }
+  };
   useEffect(() => {
     const listen = onAuthStateChanged(
       auth,
@@ -61,7 +64,7 @@ const Navbar = () => {
     signOut(auth)
       .then(() => {
         console.log("Signout Success");
-        sessionStorage.clear()
+        sessionStorage.clear();
       })
       .catch((e) => console.log(e));
   };
@@ -73,7 +76,7 @@ const Navbar = () => {
             href="/"
             className="flex items-center text-black space-x-3 rtl:space-x-reverse"
           >
-            <img src={logo} className="h-8 w-8" alt="Logo"/>
+            <img src={logo} className="h-8 w-8" alt="Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
               Kavach
             </span>
@@ -89,6 +92,14 @@ const Navbar = () => {
             </li>
             <li>
               <a
+                href="/weather-data"
+                className="block py-2 px-2 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+              >
+                <CloudCog />
+              </a>
+            </li>
+            <li>
+              <a
                 href="/chatbot"
                 className="block py-2 px-2 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
               >
@@ -96,27 +107,24 @@ const Navbar = () => {
               </a>
             </li>
             {userAuth ? (
-                <>
-                  <button
-                    className="block py-2 px-2 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
-                    onClick={userSignout}
-                  >
-                    <LogOut />
-                  </button>
-                </>
-              ) : (
+              <>
                 <button
-                  onClick={userSignin}
-                  className="block py-2 px-3 text-white rounded-full hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+                  className="block py-2 px-2 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+                  onClick={userSignout}
                 >
-                  <LogIn />
+                  <LogOut />
                 </button>
-              )}
+              </>
+            ) : (
+              <button
+                onClick={userSignin}
+                className="block py-2 px-3 text-white rounded-full hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+              >
+                <LogIn />
+              </button>
+            )}
           </ul>
-          <div
-            className="hidden w-full md:block md:w-auto"
-            id="navbar-default"
-          >
+          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 ">
               <li>
                 <a
@@ -128,7 +136,15 @@ const Navbar = () => {
               </li>
               <li>
                 <a
-                  href="/chatbot"
+                  href="/weather-data"
+                  className="block py-2 px-2 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+                >
+                  <CloudCog />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="http://localhost:3001" target="_blank"
                   className="block py-2 px-3 text-white rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
                 >
                   <Bot />

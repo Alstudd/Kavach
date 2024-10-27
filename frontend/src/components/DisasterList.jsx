@@ -1,4 +1,4 @@
-import { Filter, Link2, Sliders } from "lucide-react";
+import { Filter, Ellipsis, Sliders, Loader2 } from "lucide-react";
 import { Card } from "@tremor/react";
 import React, { useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -7,10 +7,25 @@ import { auth, db } from "../firebase";
 import { Fragment, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const DisasterList = () => {
+const DisasterList = ({ showSort }) => {
   const [userAuth, setUserAuth] = useState(null);
   const [userName, setUserName] = useState("");
+  const [disasters, setDisasters] = useState([]);
+  const [actionOpen, setActionOpen] = useState(
+    Array(disasters.length).fill(false)
+  );
+  const [allocateLoading, setAllocateLoading] = useState(false);
+  const [volunteerLoading, setVolunteerLoading] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [donationLoading, setDonationLoading] = useState(false);
+
+  const handleActionOpen = (index) => {
+    const newActionOpen = [...actionOpen];
+    newActionOpen[index] = !newActionOpen[index];
+    setActionOpen(newActionOpen);
+  };
 
   const redirect = useNavigate();
 
@@ -65,9 +80,95 @@ const DisasterList = () => {
   function openModal() {
     setIsOpen(true);
   }
+
+  useEffect(() => {
+    try {
+      const getDisasters = async () => {
+        const response = await axios.get("http://localhost:3000/api/disaster");
+        setDisasters(response.data);
+        console.log(response.data);
+      };
+      getDisasters();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const allocateResources = async (id) => {
+    setAllocateLoading(true);
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/resource-allocation",
+        {
+          disaster_id: id,
+        }
+      );
+      alert("Resources Allocated Successfully for Disaster ID: " + id);
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setActionOpen(Array(disasters.length).fill(false));
+      setAllocateLoading(false);
+    }
+  };
+
+  const informVolunteer = async (id) => {
+    setVolunteerLoading(true);
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/notifyvolunteer",
+        {
+          disaster_id: id,
+          message: "Hello This is an emergency",
+        }
+      );
+      alert("Volunteer Informed Successfully for Disaster ID: " + id);
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setActionOpen(Array(disasters.length).fill(false));
+      setVolunteerLoading(false);
+    }
+  };
+
+  const changeStatus = async (id) => {
+    setStatusLoading(true);
+    try {
+      const res = await axios.patch("http://localhost:3000/api/disaster", {
+        disaster_id: id,
+        status: "rescued",
+      });
+      alert("Status Changed Successfully for Disaster ID: " + id);
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setActionOpen(Array(disasters.length).fill(false));
+      setStatusLoading(false);
+    }
+  };
+
+  const donation = async (id) => {
+    setDonationLoading(true);
+    try {
+      const res = await axios.post("http://localhost:3000/api/donation", {
+        disaster_id: id,
+      });
+      alert("Donation link: " + res.data.link);
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setActionOpen(Array(disasters.length).fill(false));
+      setDonationLoading(false);
+    }
+  };
+
   return (
     <div>
-      <div className="md:w-[90%] w-[95%] mx-auto grid md:grid-cols-4 gap-3 py-3 ">
+      <div className={`w-full grid md:grid-cols-4 gap-5 ${showSort && "p-5"}`}>
         <Card className="col-span-3">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
@@ -78,241 +179,260 @@ const DisasterList = () => {
           <table role="list" className="w-full divide-y divide-gray-200">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
-                <th
-                  scope="col"
-                  className="max-w-6 md:px-6 md:flex hidden px-2 py-3"
-                >
-                  User
+                <th scope="col" className="md:px-6 px-2 py-3">
+                  Description
                 </th>
                 <th scope="col" className="md:px-6 px-2 py-3">
-                  Disaster
+                  Disaster Type
                 </th>
-                <th
-                  scope="col"
-                  className="text-start md:block hidden px-6 py-3"
-                >
+                <th scope="col" className="md:px-6 px-6 py-3">
                   Location
                 </th>
-                {/* <th
-                  scope="col"
-                  className="text-start md:block hidden px-6 py-3"
-                >
-                  Location
-                </th> */}
-                <th
-                  scope="col"
-                  className="md:text-start text-end md:px-6 px-2 py-3"
-                >
+                <th scope="col" className="md:px-6 px-2 py-3">
                   Status
+                </th>
+                <th scope="col" className="md:px-6 px-2 py-3">
+                  Help ID
+                </th>
+                <th scope="col" className="md:px-6 px-2 py-3">
+                  Action
                 </th>
               </tr>
             </thead>
-            {arr &&
-              arr.map((values, i) => {
-                return (
-                  <tr key={i} className="w-full bg-white border-b">
-                    <td
-                      scope="row"
-                      className="max-w-4 md:px-6 px-2 py-4 md:flex hidden font-medium text-gray-900 whitespace-nowrap"
-                    >
-                      <div className="flex-shrink-0">
-                        <img
-                          className="w-8 h-8 rounded-full"
-                          src="/user.jpg"
-                          alt={values.title}
-                        />
-                      </div>
-                    </td>
-                    <th className="md:px-6 px-0 py-4">
-                      <div className="flex-1 min-w-0 ms-4">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {values.title}
+            {disasters && !showSort
+              ? disasters.slice(0, 5).map((values, i) => {
+                  return (
+                    <tr key={i} className="w-full bg-white border-b">
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-sm font-light text-gray-500">
+                          {values.description.substring(0, 50)}...
                         </p>
-                        <p className="text-sm font-light text-gray-500 truncate">
-                          {values.owner}
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-sm font-light text-gray-500">
+                          {values.disasterType}
                         </p>
-                      </div>
-                    </th>
-                    <td className="w-10 text-start md:block hidden px-6 py-4">
-                      <div className="md:inline-flex items-center text-base font-semibold text-gray-900">
-                        {values.location}
-                      </div>
-                    </td>
-                    <td
-                      className={`px-6 py-4 whitespace-nowrap text-sm ${
-                        values.status ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {values.status ? "Solved" : "Pending"}
-                    </td>
-                    <td className="w-10 text-start px-6 py-4">
-                      <a
-                        href={`disasters/${values.id}`}
-                        className="md:inline-flex py-2 items-center text-base font-light text-blue-700"
-                      >
-                        <Link2 />
-                      </a>
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-base font-semibold text-gray-900">
+                          {values.location}
+                        </p>
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p
+                          className={`text-sm font-light text-gray-500 ${
+                            values.status === "rescued"
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {values.status}
+                        </p>
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-sm font-light text-gray-500">
+                          {values.help_id}
+                        </p>
+                      </td>
+                      <td className="relative md:px-6 px-0 py-4">
+                        <button
+                          onClick={() => handleActionOpen(i)}
+                          className="md:inline-flex py-2 items-center text-base font-light text-blue-700"
+                        >
+                          <Ellipsis />
+                        </button>
+                        {actionOpen[i] && (
+                          <div className="bg-white w-[200px] z-10 absolute -right-20 flex flex-col rounded-xl shadow-md">
+                            <button
+                              onClick={() => allocateResources(values._id)}
+                              className="border-b-[1px] border-b-black p-2 flex gap-2 justify-center"
+                            >
+                              Allocate Resources
+                              {allocateLoading && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => informVolunteer(values._id)}
+                              className="border-b-[1px] border-b-black p-2 flex gap-2 justify-center"
+                            >
+                              Inform Volunteer
+                              {volunteerLoading && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => changeStatus(values._id)}
+                              className="p-2 flex gap-2 justify-center"
+                            >
+                              Change Status
+                              {statusLoading && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              : disasters && disasters.map((values, i) => {
+                  return (
+                    <tr key={i} className="w-full bg-white border-b">
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-sm font-light text-gray-500">
+                          {values.description.substring(0, 50)}...
+                        </p>
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-sm font-light text-gray-500">
+                          {values.disasterType}
+                        </p>
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-base font-semibold text-gray-900">
+                          {values.location}
+                        </p>
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p
+                          className={`text-sm font-light text-gray-500 ${
+                            values.status === "rescued"
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {values.status}
+                        </p>
+                      </td>
+                      <td className="md:px-6 px-0 py-4">
+                        <p className="text-sm font-light text-gray-500">
+                          {values.help_id}
+                        </p>
+                      </td>
+                      <td className="relative md:px-6 px-0 py-4">
+                        <button
+                          onClick={() => handleActionOpen(i)}
+                          className="md:inline-flex py-2 items-center text-base font-light text-blue-700"
+                        >
+                          <Ellipsis />
+                        </button>
+                        {actionOpen[i] && (
+                          <div className="bg-white w-[200px] z-10 absolute -right-20 flex flex-col rounded-xl shadow-md">
+                            <button
+                              onClick={() => allocateResources(values._id)}
+                              className="border-b-[1px] border-b-black p-2 flex gap-2 justify-center"
+                            >
+                              Allocate Resources
+                              {allocateLoading && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => informVolunteer(values._id)}
+                              className="border-b-[1px] border-b-black p-2 flex gap-2 justify-center"
+                            >
+                              Inform Volunteer
+                              {volunteerLoading && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => changeStatus(values._id)}
+                              className="border-b-[1px] border-b-black p-2 flex gap-2 justify-center"
+                            >
+                              Change Status
+                              {statusLoading && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => donation(values._id)}
+                              className="p-2 flex gap-2 justify-center"
+                            >
+                              Web3 Donation
+                              {donationLoading && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
           </table>
         </Card>
-        <Card className="md:block hidden relative max-h-[50vh]">
-          <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-            Sorting Categories
-          </h3>
+        {showSort && (
+          <Card className="md:block hidden relative max-h-[50vh]">
+            <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              Sorting Categories
+            </h3>
 
-          <form className="max-w-sm mx-auto">
-            <label
-              for="countries"
-              className="block mt-3 mb-1 text-sm font-medium text-gray-900"
-            >
-              Select a Location
-            </label>
-            <select
-              id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            >
-              <option selected>Choose a Location</option>
-              <option value="NSP">Nallasopara</option>
-              <option value="Malad">Malad</option>
-              <option value="Andheri">Andheri</option>
-            </select>
-
-            <label
-              for="countries"
-              className="block mt-3 mb-1 text-sm font-medium text-gray-900"
-            >
-              Select a Disaster Category
-            </label>
-            <select
-              id="countries"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            >
-              <option selected>Choose a Category</option>
-              <option value="Natural Disaster">Natural Disaster</option>
-              <option value="Biological Disaster">Biological Disaster</option>
-              <option value="Technological Disaster">
-                Technological Disaster
-              </option>
-              <option value="Environmental Disaster">
-                Environmental Disaster
-              </option>
-              <option value="Human-Induced Disaster">
-                Human-Induced Disaster
-              </option>
-            </select>
-
-            <button
-              type="button"
-              className="flex my-3 gap-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            >
-              <Sliders size={20} />
-              Sort by Count
-            </button>
-
-            <div className="absolute bottom-5 right-5 rounded-full p-3 bg-gray-200">
-              <Filter />
-            </div>
-          </form>
-        </Card>
-      </div>
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="relative flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+            <form className="max-w-sm mx-auto">
+              <label
+                for="countries"
+                className="block mt-3 mb-1 text-sm font-medium text-gray-900"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Sorting Categories
-                  </Dialog.Title>
-                  <form className="max-w-sm mx-auto">
-                    <label
-                      for="countries"
-                      className="block mt-3 mb-1 text-sm font-medium text-gray-900"
-                    >
-                      Select a Location
-                    </label>
-                    <select
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    >
-                      <option selected>Choose a Location</option>
-                      <option value="NSP">Nallasopara</option>
-                      <option value="Malad">Malad</option>
-                      <option value="Andheri">Andheri</option>
-                    </select>
+                Select a Location
+              </label>
+              <select
+                id="countries"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              >
+                <option selected>Choose a Location</option>
+                <option value="NSP">Nallasopara</option>
+                <option value="Malad">Malad</option>
+                <option value="Andheri">Andheri</option>
+              </select>
 
-                    <label
-                      for="countries"
-                      className="block mt-3 mb-1 text-sm font-medium text-gray-900"
-                    >
-                      Select a Disaster Category
-                    </label>
-                    <select
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    >
-                      <option selected>Choose a Category</option>
-                      <option value="Natural Disaster">Natural Disaster</option>
-                      <option value="Biological Disaster">
-                        Biological Disaster
-                      </option>
-                      <option value="Technological Disaster">
-                        Technological Disaster
-                      </option>
-                      <option value="Environmental Disaster">
-                        Environmental Disaster
-                      </option>
-                      <option value="Human-Induced Disaster">
-                        Human-Induced Disaster
-                      </option>
-                    </select>
+              <label
+                for="countries"
+                className="block mt-3 mb-1 text-sm font-medium text-gray-900"
+              >
+                Select a Disaster Category
+              </label>
+              <select
+                id="countries"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              >
+                <option selected>Choose a Category</option>
+                <option value="earthquake">Earthquake</option>
+                <option value="tsunami">Tsunami</option>
+                <option value="flood">Flood</option>
+                <option value="landslide">Landslide</option>
+                <option value="forest_fire">Forest Fire</option>
+                <option value="hurricane">Hurricane</option>
+                <option value="tornado">Tornado</option>
+                <option value="volcano_eruption">Volcano Eruption</option>
+                <option value="chemical_leak">Chemical Leak</option>
+                <option value="nuclear_accident">Nuclear Accident</option>
+                <option value="oil_spill">Oil Spill</option>
+                <option value="industrial_fire">Industrial Fire</option>
+                <option value="transport_accident">Transport Accident</option>
+                <option value="disease_outbreak">Disease Outbreak</option>
+                <option value="building_collapse">Building Collapse</option>
+                <option value="dam_failure">Dam Failure</option>
+                <option value="bomb_explosion">Bomb Explosion</option>
+                <option value="hostage_crisis">Hostage Crisis</option>
+                <option value="armed_conflict">Armed Conflict</option>
+              </select>
 
-                    <button
-                      type="button"
-                      className="flex my-3 gap-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                    >
-                      <Sliders size={20} />
-                      Sort by Count
-                    </button>
-                    <button
-                      onClick={closeModal}
-                      className="absolute bottom-5 right-5 rounded-full p-3 bg-gray-200"
-                    >
-                      <Filter />
-                    </button>
-                  </form>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
+              <button
+                type="button"
+                className="flex my-3 gap-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              >
+                <Sliders size={20} />
+                Sort by Count
+              </button>
+
+              <div className="absolute bottom-5 right-5 rounded-full p-3 bg-gray-200">
+                <Filter />
+              </div>
+            </form>
+          </Card>
+        )}
+      </div>
     </div>
   );
 };

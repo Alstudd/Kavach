@@ -30,7 +30,7 @@ const sliderDetails = [
     title: "Incident Management Dashboard",
     place: "Track emergencies, resources, and responder locations",
     imgUrl:
-      "https://miro.medium.com/v2/resize:fit:1140/1*thnN9CLNAUTZzSLXrw-7iA.jpeg",
+      "https://cdn.paperpile.com/guides/img/content-analysis-illustr-400x400.png",
     domain: "Web 2.0",
   },
   {
@@ -44,12 +44,12 @@ const sliderDetails = [
     title: "Predictive Analysis and Supply Chain Optimization",
     place: "Optimize supply chain logistics during disasters",
     imgUrl:
-      "https://www.xilinx.com/content/xilinx/en/products/design-tools/resources/the-developers-guide-to-blockchain-development/_jcr_content/root/parsysFullWidth/xilinxflexibleslab/xilinxflexibleslab-parsys/xilinxcolumns_397154/childParsys-0/xilinximage_copy_cop.img.png/1644357944737.png",
+      "https://cdn.prod.website-files.com/64ab85fe83d8ba10beb48571/64d79c1104a893ff7e876572_human-like-robot-and-artificial-intelligence-2022-01-06-00-25-53-utc%20(1).jpg",
     domain: "AI & Logistics",
   },
   {
     title: "Decentralized Storage and Data Management",
-    place: "For secure and immutable disaster data",
+    place: "For secure and immutable disaster data storage",
     imgUrl:
       "https://cdni.iconscout.com/illustration/premium/thumb/business-supervisor-4487188-3726251.png?f=webp",
     domain: "Web 3.0",

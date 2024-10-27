@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { Card, AreaChart, DonutChart, BarChart } from "@tremor/react";
 import { Link2 } from "lucide-react";
+import avatar from "../assets/avatar.png";
 
 const UserDashboard = ({
   user,
@@ -131,7 +132,7 @@ const UserDashboard = ({
       <Card className="my-2 p-4 col-span-1 md:col-span-2 lg:col-span-1 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <img
-            src={sessionStorage.getItem("photo")}
+            src={sessionStorage.getItem("photo") || avatar}
             alt="Profile"
             className="w-12 h-12 rounded-full"
           />

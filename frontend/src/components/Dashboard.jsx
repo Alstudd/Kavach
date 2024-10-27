@@ -4,11 +4,93 @@ import { Filter, Sliders, SortAsc } from "lucide-react";
 
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
+import DisasterList from "./DisasterList";
+import ResourceList from "./ResourceList";
+import axios, { all } from "axios";
 
 const Dashboard = () => {
   const colRef = collection(db, "issue");
   const [complaintArr, setComplaintArr] = useState([]);
   const [ration, setRation] = useState(null);
+  const [disasters, setDisasters] = useState([]);
+  const [resources, setResources] = useState([]);
+  const [allocatedResources, setAllocatedResources] = useState([]);
+  const [solvedDisasters, setSolvedDisasters] = useState(0);
+  const [totalDonations, setTotalDonations] = useState(0);
+  const [donationArr, setDonationArr] = useState([]);
+
+  useEffect(() => {
+    try {
+      const getDisasters = async () => {
+        const response = await axios.get("http://localhost:3000/api/disaster");
+        setDisasters(response.data);
+        console.log(response.data);
+      };
+      getDisasters();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      let arr = [];
+      const getTotalDonations = async () => {
+        const response = await axios.get("http://localhost:3000/api/donation");
+        response.data.forEach((donation) => {
+          arr.push(donation.amount);
+        });
+        setDonationArr(arr);
+      };
+      getTotalDonations();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    let total = 0;
+    donationArr.forEach((donation) => {
+      total += donation;
+    });
+    setTotalDonations(total);
+  }, [donationArr]);
+
+  useEffect(() => {
+    try {
+      const getAllocatedResources = async () => {
+        const response = await axios.get("http://localhost:3000/api/resource-allocation");
+        setAllocatedResources(response.data);
+        console.log(response.data);
+      };
+      getAllocatedResources();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    let count = 0;
+    disasters.forEach((disaster) => {
+      if (disaster.status === "rescued") {
+        count += 1;
+      }
+    });
+    setSolvedDisasters(count);
+  }, [disasters]);
+
+  useEffect(() => {
+    try {
+      const getResources = async () => {
+        const response = await axios.get("http://localhost:3000/api/resource");
+        setResources(response.data);
+        console.log(response.data);
+      };
+      getResources();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
 
   const countStatus = (setComplaintArr) => {
     let newPositive = 0;
@@ -55,10 +137,21 @@ const Dashboard = () => {
         newHumanInduced += 1;
       }
     }
-    return { newBiological, newEnvironmental, newTechnological, newNatural, newHumanInduced };
+    return {
+      newBiological,
+      newEnvironmental,
+      newTechnological,
+      newNatural,
+      newHumanInduced,
+    };
   };
-  const { newBiological, newEnvironmental, newTechnological, newNatural, newHumanInduced } =
-    countCategory(complaintArr);
+  const {
+    newBiological,
+    newEnvironmental,
+    newTechnological,
+    newNatural,
+    newHumanInduced,
+  } = countCategory(complaintArr);
 
   const countLoc = (setComplaintArr) => {
     let Nalla = 0;
@@ -136,37 +229,39 @@ const Dashboard = () => {
       });
   }, []);
 
-  const categoryStat = [
-    {
-      name: "Bio.",
-      "Category Count": newBiological,
-    },
-    {
-      name: "Natural",
-      "Category Count": newNatural,
-    },
-    {
-      name: "Env.",
-      "Category Count": newEnvironmental,
-    },
-    {
-      name: "Tech.",
-      "Category Count": newTechnological,
-    },
-    {
-      name: "Human-Induced",
-      "Category Count": newHumanInduced,
-    },
-  ];
+  const calculateResourceQuantities = (resources) => {
+    const typeTotals = {};
+
+    resources.forEach((resource) => {
+      const { type, quantity } = resource;
+      if (typeTotals[type]) {
+        typeTotals[type] += quantity;
+      } else {
+        typeTotals[type] = quantity;
+      }
+    });
+
+    return Object.entries(typeTotals).map(([name, quantity]) => ({
+      name,
+      "Total Quantity": quantity,
+    }));
+  };
+
+  const categoryStat = calculateResourceQuantities(resources);
+
+  const dataFormatter = (number) =>
+    Intl.NumberFormat("us").format(number).toString();
+
+  console.log(categoryStat);
 
   const StatusRatio = [
     {
-      name: "Solved Issues",
-      count: newPositive,
+      name: "Solved Disasters",
+      count: solvedDisasters,
     },
     {
-      name: "Unsolved Issues",
-      count: newNegative,
+      name: "Unsolved Disasters",
+      count: disasters.length - solvedDisasters,
     },
   ];
 
@@ -195,29 +290,70 @@ const Dashboard = () => {
     },
   ];
 
+  function getDisasterStats(disasters) {
+    const stats = [];
+
+    disasters.forEach((disaster) => {
+      const existingDisaster = stats.find(
+        (stat) => stat.disasterType === disaster.disasterType
+      );
+
+      if (existingDisaster) {
+        if (disaster.status === "on-going") {
+          existingDisaster["number of on-going"] += 1;
+        } else if (disaster.status === "rescued") {
+          existingDisaster["number of rescued"] += 1;
+        }
+      } else {
+        stats.push({
+          disasterType: disaster.disasterType,
+          "number of on-going": disaster.status === "on-going" ? 1 : 0,
+          "number of rescued": disaster.status === "rescued" ? 1 : 0,
+        });
+      }
+    });
+
+    return stats;
+  }
+
+  const disasterStats = getDisasterStats(disasters);
+  console.log(disasterStats);
+
   let newRat;
 
   useEffect(() => {
     const ratio = () => {
-      // Assuming newPositive and Total are defined elsewhere
       newRat = (newPositive / Total).toFixed(2) * 100;
       setRation(newRat);
     };
 
-    // Delay the execution of ratio() by 200ms
     const timeoutId = setTimeout(() => {
       ratio();
     }, 100);
 
-    // Clear the timeout if component unmounts or dependency changes
     return () => clearTimeout(timeoutId);
-  }, [newPositive, Total]); // Use newPositive and Total as dependencies
+  }, [newPositive, Total]);
 
   const valueFormatter = function (number) {
     return new Intl.NumberFormat("us").format(number).toString();
   };
-  const dataFormatter = (number) =>
-    Intl.NumberFormat("us").format(number).toString();
+
+  const resourceQuantities = resources.reduce((acc, resource) => {
+    if (!acc[resource.type]) {
+      acc[resource.type] = 0;
+    }
+    acc[resource.type] += resource.quantity;
+    return acc;
+  }, {});
+
+  const resourceArray = Object.keys(resourceQuantities).map((type) => ({
+    resourceType: type,
+    quantity: resourceQuantities[type],
+  }));
+
+  resourceArray.sort((a, b) => b.quantity - a.quantity);
+
+  const top4Resources = resourceArray.slice(0, 4);
 
   return (
     <div className="md:w-[90%] w-[95%] mx-auto py-3">
@@ -226,26 +362,26 @@ const Dashboard = () => {
           <div className="grid md:grid-cols-3 gap-3 mb-3 ">
             <Card className="mx-auto" decorationColor="indigo">
               <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Disasters in Nallasopara Region
+                Number of resources
               </p>
               <p className="text-3xl text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
-                {Nalla} / {Total}
+                {resources.length}
               </p>
             </Card>
             <Card className="mx-auto" decorationColor="indigo">
               <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Disasters in Malad Region
+                Number of allocated resources
               </p>
               <p className="text-3xl text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
-                {Malad} / {Total}
+                {allocatedResources.length}
               </p>
             </Card>
             <Card className="mx-auto" decorationColor="indigo">
               <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Disasters in Andheri Region
+                Total Donations in SOL
               </p>
               <p className="text-3xl text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
-                {Andheri} / {Total}
+                {totalDonations} SOL
               </p>
             </Card>
           </div>
@@ -255,14 +391,14 @@ const Dashboard = () => {
                 Disaster Tracker
               </h3>
               <p className="text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
-                {Total}
+                {disasters.length}
               </p>
               <AreaChart
                 className="mt-4 h-72"
-                data={LocSolved}
-                index="location"
+                data={disasterStats}
+                index="disasterType"
                 yAxisWidth={60}
-                categories={["Disasters", "Solved Disasters"]}
+                categories={["number of on-going", "number of rescued"]}
                 colors={["indigo", "cyan"]}
                 valueFormatter={valueFormatter}
               />
@@ -273,9 +409,9 @@ const Dashboard = () => {
               </h3>
               <BarChart
                 className="mt-6"
-                data={categoryStat}
-                index="name"
-                categories={["Category Count"]}
+                data={top4Resources}
+                index="resourceType"
+                categories={["quantity"]}
                 colors={["blue"]}
                 valueFormatter={dataFormatter}
                 yAxisWidth={48}
@@ -286,23 +422,21 @@ const Dashboard = () => {
         <div className="grid gap-3">
           <Card className="mx-auto" decorationColor="indigo">
             <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              Problem Solving Ratio
+              Disaster Rescue Completion Percentage
             </p>
             <p className="text-3xl mb-4 text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
-              {ration}%
+              {((solvedDisasters / disasters.length) * 100).toFixed(2)}%
             </p>
             <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              This is the ratio of the number of disasters solved to the total
-              number of disasters
+              This is the percentage of disasters that have been rescued
             </p>
           </Card>
           <Card className="h-full">
             <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              Completion Ratio
+              Disaster Completion Ratio
             </h3>
             <h3 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              Ratio of the no. of disasters/ the no. of disasters recieved by
-              the government
+              Status of Disasters
             </h3>
             <DonutChart
               data={StatusRatio}
@@ -371,83 +505,16 @@ const Dashboard = () => {
           </Card>
         </div> */}
       </div>
-      <a href="/disasters">
-        <Card className="my-3">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              Disaster List
-            </h3>
-          </div>
-          <table role="list" className="w-full divide-y divide-gray-200">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="max-w-6 md:px-6 md:flex hidden px-2 py-3"
-                >
-                  User
-                </th>
-                <th scope="col" className="md:px-6 px-2 py-3">
-                  Disaster
-                </th>
-                <th
-                  scope="col"
-                  className="text-start md:block hidden px-6 py-3"
-                >
-                  Location
-                </th>
-                <th
-                  scope="col"
-                  className="md:text-start text-end md:px-6 px-2 py-3"
-                >
-                  Status
-                </th>
-              </tr>
-            </thead>
-            {complaintArr &&
-              complaintArr.map((values, i) => {
-                return (
-                  <tr key={i} className="w-full bg-white border-b">
-                    <td
-                      scope="row"
-                      className="max-w-4 md:px-6 px-2 py-4 md:flex hidden font-medium text-gray-900 whitespace-nowrap"
-                    >
-                      <div className="flex-shrink-0">
-                        <img
-                          className="w-8 h-8 rounded-full"
-                          src="/user.jpg"
-                          alt={values.owner}
-                        />
-                      </div>
-                    </td>
-                    <th className="md:px-6 px-0 py-4">
-                      <div className="flex-1 min-w-0 ms-4">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {values.title}
-                        </p>
-                        <p className="text-sm text-gray-500 truncate">
-                          {values.owner}
-                        </p>
-                      </div>
-                    </th>
-                    <td className="w-10 text-start md:block hidden px-6 py-4">
-                      <div className="md:inline-flex items-center text-base font-semibold text-gray-900">
-                        {values.location}
-                      </div>
-                    </td>
-                    <td
-                      className={`px-6 py-4 whitespace-nowrap text-sm ${
-                        values.status ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {values.status ? "Solved" : "Pending"}
-                    </td>
-                  </tr>
-                );
-              })}
-          </table>
-        </Card>
-      </a>
+      <div className="pt-3">
+        <a href="/disasters">
+          <DisasterList showSort={false} />
+        </a>
+      </div>
+      <div className="pt-3">
+        <a href="/resources">
+          <ResourceList showSort={false} />
+        </a>
+      </div>
     </div>
   );
 };

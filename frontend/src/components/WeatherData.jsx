@@ -21,6 +21,7 @@ const WeatherData = () => {
                 className="mt-4"
                 src="https://mausam.imd.gov.in/Satellite/3Dasiasec_ir1.jpg"
                 alt="map"
+                draggable={false}
               />
             </Card>
             <Card className="w-full">
@@ -31,6 +32,7 @@ const WeatherData = () => {
                 className="mt-4"
                 src="https://mausam.imd.gov.in/Radar/MOSAIC/Converted/mosaic.gif"
                 alt="map"
+                draggable={false}
               />
             </Card>
           </div>
@@ -45,6 +47,7 @@ const WeatherData = () => {
                 className="mt-4"
                 src="https://mausam.imd.gov.in/lightning/Converted/BT.gif"
                 alt="map"
+                draggable={false}
               />
             </Card>
             <Card className="w-full">
@@ -55,6 +58,7 @@ const WeatherData = () => {
                 className="mt-4"
                 src="https://mausam.imd.gov.in/Radar/MOSAIC/Converted/mosaic.gif"
                 alt="map"
+                draggable={false}
               />
             </Card>
           </div>

@@ -18,6 +18,7 @@ import AddDisaster from "./components/AddDisaster";
 import AddHelp from "./components/AddHelp";
 import AddResource from "./components/AddResource";
 import AddDisasterPage from "./components/AddDisasterPage";
+import ResourceList from "./components/ResourceList";
 
 const router = createBrowserRouter([
   {
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
         element: (
           <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
             <Nav />
-            <DisasterList />
+            <DisasterList showSort={true} />
           </div>
         ),
       },
@@ -164,6 +165,15 @@ const router = createBrowserRouter([
           <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
             <Nav />
             <AddDisasterPage />
+          </div>
+        ),
+      },
+      {
+        path: "/resources",
+        element: (
+          <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
+            <Nav />
+            <ResourceList showSort={true} />
           </div>
         ),
       },
