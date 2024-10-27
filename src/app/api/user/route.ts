@@ -27,6 +27,12 @@ export async function POST(req: NextRequest) {
     await connectToDB();
     const body = await req.json();
     const { email } = body;
+    const Alreadyuser = await userSchema.find({
+      email: email,
+    });
+    if (Alreadyuser) {
+      return Response.json({ message: "User is reg", user });
+    }
     const user = new userSchema({
       email,
     });
