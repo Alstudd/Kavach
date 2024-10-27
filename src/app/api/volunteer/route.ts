@@ -27,9 +27,9 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDB();
     const body = await req.json();
-    const { user_id, disaster_id } = body;
+    const { email, disaster_id } = body;
     const volunteer = new volunteerSchema({
-      user_id,
+      email,
       disaster_id,
     });
     await volunteer.save();

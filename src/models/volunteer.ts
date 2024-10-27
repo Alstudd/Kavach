@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const volunteerSchema = new mongoose.Schema(
   {
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
+    email: {
+      type: String,
       ref: "User",
       required: true,
     },

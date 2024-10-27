@@ -6,20 +6,14 @@ export async function GET(req: Request) {
     const requesturl = new URL(req.url);
 
     await connectToDB();
-    const userId = requesturl.searchParams.get("id");
-    const type = requesturl.searchParams.get("type");
-    if (userId || type) {
+    const email = requesturl.searchParams.get("email");
+    if (email) {
       const user = await userSchema.find({
-        $or: [{ _id: userId }, { userType: type }],
+        email: email,
       });
       return Response.json(user);
     }
-    if (userId && type) {
-      const user = await userSchema.find({
-        $and: [{ _id: userId }, { userType: type }],
-      });
-      return Response.json(user);
-    }
+
     const user = await userSchema.find();
     return Response.json(user);
   } catch (error) {
@@ -32,23 +26,9 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDB();
     const body = await req.json();
-    const {
-      username,
-      name,
-      phoneNumber,
-      email,
-      password,
-      aadharNumber,
-      userType,
-    } = body;
+    const { email } = body;
     const user = new userSchema({
-      username,
-      name,
-      phoneNumber,
       email,
-      password,
-      aadharNumber,
-      userType,
     });
     await user.save();
     return Response.json({ message: "User is reg", user });
