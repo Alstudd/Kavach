@@ -25,39 +25,39 @@ const Dashboard = () => {
   const { newPositive, newNegative } = countStatus(complaintArr);
 
   const countCategory = (setComplaintArr) => {
-    let newRoad = 0;
-    let newWat = 0;
-    let newElec = 0;
-    let newOthers = 0;
-    let newGar = 0;
+    let newBiological = 0;
+    let newNatural = 0;
+    let newEnvironmental = 0;
+    let newHumanInduced = 0;
+    let newTechnological = 0;
     for (let i = 0; i < setComplaintArr.length; i++) {
       if (
-        setComplaintArr[i].type === "Road" ||
+        setComplaintArr[i].type === "Biological Disasters" ||
         setComplaintArr[i].type === "fnsyV6Ze7Ufhkxcqnq20"
       ) {
-        newRoad += 1;
+        newBiological += 1;
       } else if (
-        setComplaintArr[i].type === "Water" ||
+        setComplaintArr[i].type === "Natural Disasters" ||
         setComplaintArr[i].type === "YU3EJbpcs7lTo7Pqbgow"
       ) {
-        newWat += 1;
+        newNatural += 1;
       } else if (
-        setComplaintArr[i].type === "Electricity" ||
+        setComplaintArr[i].type === "Environmental Disasters" ||
         setComplaintArr[i].type === "iIntcTRGv0z8mIRXvYtL"
       ) {
-        newElec += 1;
+        newEnvironmental += 1;
       } else if (
-        setComplaintArr[i].type === "Garbage" ||
+        setComplaintArr[i].type === "Technological Disasters" ||
         setComplaintArr[i].type === "Ang7eN63LnIbkKPTcPvx"
       ) {
-        newGar += 1;
+        newTechnological += 1;
       } else {
-        newOthers += 1;
+        newHumanInduced += 1;
       }
     }
-    return { newRoad, newElec, newGar, newWat, newOthers };
+    return { newBiological, newEnvironmental, newTechnological, newNatural, newHumanInduced };
   };
-  const { newRoad, newElec, newGar, newWat, newOthers } =
+  const { newBiological, newEnvironmental, newTechnological, newNatural, newHumanInduced } =
     countCategory(complaintArr);
 
   const countLoc = (setComplaintArr) => {
@@ -138,24 +138,24 @@ const Dashboard = () => {
 
   const categoryStat = [
     {
-      name: "Road",
-      "Category Count": newRoad,
+      name: "Bio.",
+      "Category Count": newBiological,
     },
     {
-      name: "Water",
-      "Category Count": newWat,
+      name: "Natural",
+      "Category Count": newNatural,
     },
     {
-      name: "Electricity",
-      "Category Count": newElec,
+      name: "Env.",
+      "Category Count": newEnvironmental,
     },
     {
-      name: "Garbage",
-      "Category Count": newGar,
+      name: "Tech.",
+      "Category Count": newTechnological,
     },
     {
-      name: "Others",
-      "Category Count": newOthers,
+      name: "Human-Induced",
+      "Category Count": newHumanInduced,
     },
   ];
 
@@ -175,23 +175,23 @@ const Dashboard = () => {
   const LocSolved = [
     {
       location: "Nallasopara",
-      Issues: Nalla,
-      "Solved Issues": NallaSolved,
+      Disasters: Nalla,
+      "Solved Disasters": NallaSolved,
     },
     {
       location: "Malad",
-      Issues: Malad,
-      "Solved Issues": MaladSolved,
+      Disasters: Malad,
+      "Solved Disasters": MaladSolved,
     },
     {
       location: "Andheri",
-      Issues: Andheri,
-      "Solved Issues": AndheriSolved,
+      Disasters: Andheri,
+      "Solved Disasters": AndheriSolved,
     },
     {
       location: "Others",
-      Issues: Others,
-      "Solved Issues": OthersSolved,
+      Disasters: Others,
+      "Solved Disasters": OthersSolved,
     },
   ];
 
@@ -226,7 +226,7 @@ const Dashboard = () => {
           <div className="grid md:grid-cols-3 gap-3 mb-3 ">
             <Card className="mx-auto" decorationColor="indigo">
               <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Problems in Nallasopara Region
+                Disasters in Nallasopara Region
               </p>
               <p className="text-3xl text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
                 {Nalla} / {Total}
@@ -234,7 +234,7 @@ const Dashboard = () => {
             </Card>
             <Card className="mx-auto" decorationColor="indigo">
               <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Problems in Malad Region
+                Disasters in Malad Region
               </p>
               <p className="text-3xl text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
                 {Malad} / {Total}
@@ -242,7 +242,7 @@ const Dashboard = () => {
             </Card>
             <Card className="mx-auto" decorationColor="indigo">
               <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Problems in Andheri Region
+                Disasters in Andheri Region
               </p>
               <p className="text-3xl text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
                 {Andheri} / {Total}
@@ -252,7 +252,7 @@ const Dashboard = () => {
           <div className="grid md:grid-cols-2 gap-3">
             <Card>
               <h3 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                Issue Tracker
+                Disaster Tracker
               </h3>
               <p className="text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">
                 {Total}
@@ -262,14 +262,14 @@ const Dashboard = () => {
                 data={LocSolved}
                 index="location"
                 yAxisWidth={60}
-                categories={["Issues", "Solved Issues"]}
+                categories={["Disasters", "Solved Disasters"]}
                 colors={["indigo", "cyan"]}
                 valueFormatter={valueFormatter}
               />
             </Card>
             <Card>
               <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                Category based Issues faced by the People
+                Category based Disasters faced by the People
               </h3>
               <BarChart
                 className="mt-6"
@@ -292,8 +292,8 @@ const Dashboard = () => {
               {ration}%
             </p>
             <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              This is the ratio of the number of problems solved to the total
-              number of problems
+              This is the ratio of the number of disasters solved to the total
+              number of disasters
             </p>
           </Card>
           <Card className="h-full">
@@ -301,7 +301,7 @@ const Dashboard = () => {
               Completion Ratio
             </h3>
             <h3 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-              Ratio of the no. of complaints / the no. of complaints recieved by
+              Ratio of the no. of disasters/ the no. of disasters recieved by
               the government
             </h3>
             <DonutChart
@@ -315,7 +315,6 @@ const Dashboard = () => {
             />
           </Card>
         </div>
-
         {/* <div className="flex flex-col gap-3">
           <Card className="mx-auto" decorationColor="indigo">
             <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
@@ -372,11 +371,11 @@ const Dashboard = () => {
           </Card>
         </div> */}
       </div>
-      <a href="/complaints">
+      <a href="/disasters">
         <Card className="my-3">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              Complaint List
+              Disaster List
             </h3>
           </div>
           <table role="list" className="w-full divide-y divide-gray-200">
@@ -389,7 +388,7 @@ const Dashboard = () => {
                   User
                 </th>
                 <th scope="col" className="md:px-6 px-2 py-3">
-                  Complaint
+                  Disaster
                 </th>
                 <th
                   scope="col"

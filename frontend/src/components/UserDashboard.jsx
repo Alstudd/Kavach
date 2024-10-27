@@ -168,7 +168,7 @@ const UserDashboard = ({
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Complaint
+                  Disaster
                 </th>
                 <th
                   scope="col"
@@ -206,8 +206,7 @@ const UserDashboard = ({
             Completion Ratio
           </h3>
           <h3 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-            Ratio of the no. of complaints / the no. of complaints recieved by
-            the government
+            Ratio of the no. of disasters / the no. of disasters recieved by Kavach
           </h3>
           <DonutChart
             data={StatusRatio}
@@ -220,24 +219,24 @@ const UserDashboard = ({
           />
           <div className="grid md:grid-cols-2 grid-cols-1 gap-0 md:gap-3">
             <a
-              href="/user-complaint"
+              href="/user-disaster"
               className="w-full text-center bg-gray-900 cursor-pointer font-medium hover:bg-slate-600 text-white rounded-md px-4 py-3 mt-4 text-sm"
             >
-              User Complaints
+              User Disasters
             </a>
             <a
-              href="/add-issue"
+              href="/add-disaster"
               className="w-full text-center bg-white border border-gray-900 cursor-pointer font-medium text-black rounded-md px-4 py-3 mt-4 text-sm"
             >
-              Add Complaints
+              Add Disasters
             </a>
           </div>
         </Card>
 
         {/* Complaint List Card */}
         <Card className="md:block hidden p-4 col-span-1 sm:col-span-2 lg:col-span-3">
-          <h2 className="text-lg font-semibold mb-4">Complaint List</h2>
-          <a href="/user-complaint" className="overflow-x-auto">
+          <h2 className="text-lg font-semibold mb-4">Disaster List</h2>
+          <a href="/user-disaster" className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -245,7 +244,7 @@ const UserDashboard = ({
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Complaint
+                    Disaster
                   </th>
                   <th
                     scope="col"
@@ -294,8 +293,8 @@ const UserDashboard = ({
           </a>
         </Card>
         <Card className="md:hidden block p-4 col-span-1 sm:col-span-2 lg:col-span-3">
-          <h2 className="text-lg font-semibold mb-4">Complaint List</h2>
-          <a href="/user-complaint" className="overflow-x-auto">
+          <h2 className="text-lg font-semibold mb-4">Disaster List</h2>
+          <a href="/user-disaster" className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -303,7 +302,7 @@ const UserDashboard = ({
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Complaint
+                    Disaster
                   </th>
                   <th
                     scope="col"

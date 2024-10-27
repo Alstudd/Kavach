@@ -23,7 +23,7 @@ import { useParams } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-const UserComplaint = () => {
+const UserDisaster = () => {
   const [userAuth, setUserAuth] = useState(null);
 	const [userName, setUserName] = useState("");
 
@@ -53,8 +53,8 @@ const UserComplaint = () => {
     };
   }, []);
 
-  const { complaintId } = useParams();
-  const myId = complaintId;
+  const { disasterId } = useParams();
+  const myId = disasterId;
   const [review, setReview] = useState("");
   const [reviewDesc, setReviewDesc] = useState("");
   const concatenatedText = review + reviewDesc;
@@ -145,7 +145,7 @@ const UserComplaint = () => {
                   <div className="grid md:grid-cols-2 gap-3 py-5">
                     <div className="">
                       <p className="mb-3 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                        Complaint Info :
+                        Disaster Info :
                       </p>
                       <h3 className="text-2xl font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
                         {values.title}
@@ -196,7 +196,7 @@ const UserComplaint = () => {
                               <input
                                 className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
                                 type="text"
-                                placeholder="Enter your Issue"
+                                placeholder="Enter your review title"
                                 value={review}
                                 onChange={(e) => setReview(e.target.value)}
                                 required={true}
@@ -209,7 +209,7 @@ const UserComplaint = () => {
                                 rows={3}
                                 className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
                                 type="text"
-                                placeholder="Exxplain your Issue"
+                                placeholder="Enter your review description"
                                 value={reviewDesc}
                                 onChange={(e) => setReviewDesc(e.target.value)}
                                 required={true}
@@ -284,4 +284,4 @@ const UserComplaint = () => {
   );
 };
 
-export default UserComplaint;
+export default UserDisaster;

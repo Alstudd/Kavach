@@ -6,15 +6,15 @@ import TTS from "./components/TTS";
 import Chatbot from "./components/Chatbot";
 import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
-import ComplaintList from "./components/ComplaintList";
+import DisasterList from "./components/DisasterList";
 import Nav from "./components/Nav";
-import Complaint from "./components/Complaint";
-import Issue from "./components/Issue";
-import UserDashboard from "./components/UserDashboard";
+import Disaster from "./components/Disaster";
 import DummyData from "./components/DummyData";
-import UserComplaintList from "./components/UserComplaintList";
-import UserComplaint from "./components/UserComplaint";
+import UserDisasterList from "./components/UserDisasterList";
+import UserDisaster from "./components/UserDisaster";
 import Contact from "./components/Contact";
+import WeatherData from "./components/WeatherData";
+import AddDisaster from "./components/AddDisaster";
 
 const router = createBrowserRouter([
   {
@@ -64,20 +64,31 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/complaints",
+        path: "/weather-data",
         element: (
-          <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
+          <div>
             <Nav />
-            <ComplaintList />
+            <div className="bg-gray-100 ">
+              <WeatherData />
+            </div>
           </div>
         ),
       },
       {
-        path: "/add-issue",
+        path: "/disasters",
         element: (
           <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
             <Nav />
-            <Issue />
+            <DisasterList />
+          </div>
+        ),
+      },
+      {
+        path: "/add-disaster",
+        element: (
+          <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
+            <Nav />
+            <AddDisaster />
           </div>
         ),
       },
@@ -85,10 +96,10 @@ const router = createBrowserRouter([
         element: (
           <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
             <Nav />
-            <Complaint />
+            <Disaster />
           </div>
         ),
-        path: "complaints/:complaintId",
+        path: "disasters/:disasterId",
       },
       {
         path: "/user-dashboard",
@@ -100,11 +111,11 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/user-complaint",
+        path: "/user-disaster",
         element: (
           <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
             <Nav />
-            <UserComplaintList />
+            <UserDisasterList />
           </div>
         ),
       },
@@ -112,10 +123,10 @@ const router = createBrowserRouter([
         element: (
           <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
             <Nav />
-            <UserComplaint />
+            <UserDisaster />
           </div>
         ),
-        path: "user-complaint/:complaintId",
+        path: "user-disaster/:disasterId",
       },
       {
         path: "/contact",

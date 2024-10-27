@@ -17,8 +17,7 @@ const Hero = () => {
           </h1>
           <p className="mt-4">
             <span className="text-white max-sm:text-sm font-semibold text-center z-10 text-sm px-4 hero-text">
-              We are here to get your voice heard to the government, tracking
-              their every process and how they respond to your inconviences
+            We are here to ensure your voice is heard by the authorities, tracking every step of their process.
             </span>
           </p>
         </div>

@@ -53,6 +53,8 @@ const Navbar = () => {
     };
   }, []);
 
+  console.log(userAuth)
+
   const userSignout = () => {
     signOut(auth)
       .then(() => {
