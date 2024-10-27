@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       email: email,
     });
     if (Alreadyuser) {
-      return Response.json({ message: "User is reg", user });
+      return Response.json({ message: "User is reg", Alreadyuser });
     }
     const user = new userSchema({
       email,
