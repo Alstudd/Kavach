@@ -68,7 +68,17 @@ function AddDisasterPage() {
         help_id: help_id,
         status: status,
       });
+
+      const emailRes = await axios.post("http://localhost:3000/api/sendMail", {
+        location: location,
+        disasterType: disasterType,
+        description: description,
+        help_id: help_id,
+        status: status,
+      })
+
       console.log(res.data);
+      console.log(emailRes.data);
 
       alert("Disaster submitted successfully");
     } catch (e) {
