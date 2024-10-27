@@ -7,7 +7,7 @@ export default function InfoBoxes() {
                 <div className="info-box">
                     <FaAddressBook className='text-[#2196f3] text-4xl' />
                     <h3>Address</h3>
-                    <p>Public Square - Paypal Mafia<br />Maharashtra, Mumbai-64</p>
+                    <p>Kavach - Paypal Mafia<br />Maharashtra, Mumbai-64</p>
                 </div>
                 <div className="info-box">
                     <FaPhone className='text-[#2196f3] text-4xl' />
@@ -19,7 +19,7 @@ export default function InfoBoxes() {
                 <div className="info-box">
                     <FaEnvelope className='text-[#2196f3] text-4xl' />
                     <h3>Email Us</h3>
-                    <p>public-square@gmail.com</p>
+                    <p>kavach@gmail.com</p>
                 </div>
                 <div className="info-box">
                     <FaClock className='text-[#2196f3] text-4xl' />

@@ -38,7 +38,7 @@ export default function Footer() {
           <ol className="links">
             <li className="py-1"><a href="/">Home</a></li>
             <li className="py-1"><a href="/dashboard">Dashboard</a></li>
-            <li className="py-1"><a href="/chatbot">Chatbot</a></li>
+            <li className="py-1"><a href="http://localhost:3001" target="_blank">Chatbot</a></li>
             <li className="py-1"><a href="/contact">Contact</a></li>
           </ol>
         </div>

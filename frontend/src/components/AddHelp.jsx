@@ -4,12 +4,15 @@ import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-function AddDisaster() {
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [loc, setLoc] = useState("");
-  const [type, setType] = useState("");
+function AddHelp() {
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [location, setLocation] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
   const [userAuth, setUserAuth] = useState(null);
   const [userName, setUserName] = useState("");
@@ -37,34 +40,17 @@ function AddDisaster() {
   const submitReq = async (e) => {
     e.preventDefault();
     try {
-      const res = await addDoc(collection(db, "issue"), {
-        title: title,
-        desc: desc,
-        location: loc,
-        owner: userName,
-        type: type,
-        count: 1,
-        status: false,
-        revStat: false,
+      const res = await axios.post("http://localhost:3000/api/help", {
+        phoneNumber: phoneNumber,
+        description: description,
+        image_url: imageUrl,
+        location: location,
+        State: state,
+        City: city,
       });
+      console.log(res.data);
 
-      await addDoc(collection(db, `Departments/${type}/issues`), {
-        title: title,
-        desc: desc,
-        location: loc,
-        owner: userName,
-        type: type,
-        count: 1,
-        status: false,
-        revStat: false,
-      });
-
-      // const newRef = collection(db, "Departments", {type});
-      // await updateDoc(washingtonRef, {
-      //   count: count += 1,
-      // });
-
-      alert("Project submitted successfully");
+      alert("Help submitted successfully");
     } catch (e) {
       alert("Project not submitted");
       console.log(e);
@@ -83,82 +69,87 @@ function AddDisaster() {
             <div className="w-[400px] bg-white border border-gray-300 shadow-2xl rounded-lg h-fit p-4">
               <div className="border-gray-300 px-4 py-4">
                 <div className="text-2xl font-semibold mb-6">
-                  Add a Disaster{" "}
-                  <span className="text-gray-600 font-normal text-xl">
-                    and get help and resources {""}
-                  </span>
-                  from Kavach
+                  Get help from Kavach
                 </div>
                 {/* {loading ? <Spinner /> : ""} */}
                 <div className="form">
                   <label className="text-gray-800 text-sm font-semibold">
-                    Disaster Title
+                    Phone number
                   </label>
                   <input
                     className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
-                    type="text"
-                    placeholder="Enter title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    type="number"
+                    placeholder="Enter phone number"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                     required={true}
                   />
 
                   <label className="text-gray-800 text-sm font-semibold">
-                    Disaster Description
+                    Description
                   </label>
                   <textarea
                     rows={3}
                     className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
                     type="text"
                     placeholder="Enter description"
-                    value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     required={true}
                   />
 
                   <label className="text-gray-800 text-sm font-semibold">
-                    Disaster Location
+                    Image URL
                   </label>
                   <input
                     className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
                     type="text"
-                    placeholder="Enter the area of disaster"
-                    value={loc}
-                    onChange={(e) => setLoc(e.target.value)}
+                    placeholder="Enter image URL"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
                     required={true}
                   />
 
                   <label className="text-gray-800 text-sm font-semibold">
-                    Disaster Category
+                    Location
                   </label>
-                  <select
-                    id="category"
-                    value={type}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    onChange={(e) => setType(e.target.value)}
-                  >
-                    <option defaultValue="Default">Choose a Category</option>
-                    <option value="YU3EJbpcs7lTo7Pqbgow">
-                      Natural Disasters
-                    </option>
-                    <option value="Ang7eN63LnIbkKPTcPvx">
-                      Technological Disasters
-                    </option>
-                    <option value="fnsyV6Ze7Ufhkxcqnq20">
-                      Biological Disasters
-                    </option>
-                    <option value="iIntcTRGv0z8mIRXvYtL">
-                      Environmental Disasters
-                    </option>
-                    <option value="pkAk0iVIgtzd6Y4rEWvw">
-                      Human-Induced Disasters
-                    </option>
-                  </select>
+                  <input
+                    className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
+                    type="text"
+                    placeholder="Enter location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    required={true}
+                  />
+
+                  <label className="text-gray-800 text-sm font-semibold">
+                    State
+                  </label>
+                  <input
+                    className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
+                    type="text"
+                    placeholder="Enter state"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    required={true}
+                  />
+
+                  <label className="text-gray-800 text-sm font-semibold">
+                    City
+                  </label>
+                  <input
+                    className="w-full border-2 border-gray-800 rounded-md px-4 py-3 mt-1 text-xs"
+                    type="text"
+                    placeholder="Enter city"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    required={true}
+                  />
                   <button
                     className="w-full text-center bg-gray-900 cursor-pointer font-medium hover:bg-slate-600 text-white rounded-full px-4 py-3 mt-4 text-sm"
                     type="submit"
                   >
-                    Add Disaster
+                    Submit
                   </button>
                 </div>
               </div>
@@ -171,4 +162,4 @@ function AddDisaster() {
   );
 }
 
-export default AddDisaster;
+export default AddHelp;

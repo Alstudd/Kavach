@@ -232,7 +232,7 @@ const Chatbot = () => {
 									<path d="M9 13v2" />
 								</svg>
 								<h5 className="text-lg font-medium text-black mb-0">
-									Public Square AI Chatbot
+									Kavach AI Chatbot
 								</h5>
 							</div>
 							<div className="flex-auto p-6">

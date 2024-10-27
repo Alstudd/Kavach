@@ -31,7 +31,7 @@ const Hero = () => {
               </div>
             </div>
           </a>
-          <a href="/chatbot">
+          <a href="http://localhost:3001" target="_blank">
             <div className="bg-transparent h-14 rounded-full py-2 pl-4 px-5 w-fit flex items-center justify-center hover:border cursor-pointer text-white">
               <Bot alt="" className="mr-2 max-sm:hidden" />
               <div className="text-sm text-white max-sm:text-sm">Chatbot</div>
