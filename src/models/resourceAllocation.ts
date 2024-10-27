@@ -22,4 +22,5 @@ const resourceAllocationSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("ResourceAllocation", resourceAllocationSchema);
+export default mongoose.models.ResourceAllocation ||
+  mongoose.model("ResourceAllocation", resourceAllocationSchema);

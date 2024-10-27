@@ -8,4 +8,5 @@ const donationBlinkSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("DonationBlink", donationBlinkSchema);
+export default mongoose.models.DonationBlink ||
+  mongoose.model("DonationBlink", donationBlinkSchema);

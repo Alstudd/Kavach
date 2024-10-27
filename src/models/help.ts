@@ -32,4 +32,4 @@ const helpSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Help", helpSchema);
+export default mongoose.models.Help || mongoose.model("Help", helpSchema);

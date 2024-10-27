@@ -8,15 +8,22 @@ export async function GET(req: Request) {
     await connectToDB();
     const disasterId = requesturl.searchParams.get("id");
     const type = requesturl.searchParams.get("type");
-    if (disasterId || type) {
+
+    if (disasterId && type) {
       const disaster = await disasterSchema.find({
-        $or: [{ _id: disasterId }, { type: type }],
+        $and: [{ _id: disasterId }, { disasterType: type }],
       });
       return Response.json(disaster);
     }
-    if (disasterId && type) {
+    if (disasterId) {
       const disaster = await disasterSchema.find({
-        $and: [{ _id: disasterId }, { type: type }],
+        _id: disasterId,
+      });
+      return Response.json(disaster);
+    }
+    if (type) {
+      const disaster = await disasterSchema.find({
+        disasterType: type,
       });
       return Response.json(disaster);
     }

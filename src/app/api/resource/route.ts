@@ -9,18 +9,25 @@ export async function GET(req: Request) {
     await connectToDB();
     const resourceId = requesturl.searchParams.get("id");
     const type = requesturl.searchParams.get("type");
-    if (resourceId || type) {
-      const resource = await resourceSchema.find({
-        $or: [{ _id: resourceId }, { type: type }],
-      });
-      return Response.json(resource);
-    }
     if (resourceId && type) {
       const resource = await resourceSchema.find({
         $and: [{ _id: resourceId }, { type: type }],
       });
       return Response.json(resource);
     }
+    if (resourceId) {
+      const resource = await resourceSchema.find({
+        _id: resourceId,
+      });
+      return Response.json(resource);
+    }
+    if (type) {
+      const resource = await resourceSchema.find({
+        type: type,
+      });
+      return Response.json(resource);
+    }
+
     const resource = await resourceSchema.find();
     return Response.json(resource);
   } catch (error) {

@@ -22,4 +22,5 @@ const userKnowledgeSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("UserKnowledge", userKnowledgeSchema);
+export default mongoose.models.UserKnowledge ||
+  mongoose.model("UserKnowledge", userKnowledgeSchema);

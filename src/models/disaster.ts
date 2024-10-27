@@ -52,4 +52,5 @@ const disasterSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Disaster", disasterSchema);
+export default mongoose.models.Disaster ||
+  mongoose.model("Disaster", disasterSchema);
