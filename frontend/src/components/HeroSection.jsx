@@ -30,13 +30,12 @@ export default function HeroSection() {
         </div>
       </div>
       {/* <img className='w-[20rem] h-[20rem] xs:w-[25rem] xs:h-[25rem] sm:w-[35rem] sm:h-[35rem]' src={logo} alt="" /> */}
-      {/* <div
-        className='w-[20rem] h-[20rem] xs:w-[25rem] xs:h-[25rem] m-auto md:ml-0 md:mb-0 md:mt-0 md:mr-40 sm:w-[30rem] sm:h-[30rem] overflow-hidden rounded-[5rem] border-solid border-[8px] border-blue-500'>
+      <div
+        className='w-[20rem] h-[20rem] m-auto md:ml-0 md:mb-0 md:mt-0 md:mr-40 overflow-hidden rounded-[5rem] border-solid border-[8px] border-blue-500'>
         <div className='zoom-in'>
           <figure><img className='w-full h-full' src={logo} alt="" /></figure>
         </div>
-      </div> */}
-      {/* <img class="mr-10 lg:h-[30rem] lg:w-[36rem] 2xl:h-[30rem] 2xl:w-[36rem] md:h-[30rem] md:w-[28rem]" src={CompC} alt="Main-img" /> */}
+      </div>
     </div>
   )
 }

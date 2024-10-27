@@ -21,7 +21,7 @@ import { useParams } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-const Complaint = () => {
+const Disaster = () => {
   const [userAuth, setUserAuth] = useState(null);
 	const [userName, setUserName] = useState("");
 
@@ -51,8 +51,8 @@ const Complaint = () => {
     };
   }, []);
   
-  const { complaintId } = useParams();
-  const myId = complaintId;
+  const { disasterId } = useParams();
+  const myId = disasterId;
 
   const [stat, setStat] = useState(null);
   const [arr, setArr] = useState([]);
@@ -115,7 +115,7 @@ const Complaint = () => {
                 <div className="grid md:grid-cols-2 gap-3 py-5">
                   <div className="">
                     <p className="mb-3 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                      Complaint Info :
+                      Disaster Info :
                     </p>
                     <h3 className="text-2xl font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
                       {values.title}
@@ -228,4 +228,4 @@ const Complaint = () => {
   );
 };
 
-export default Complaint;
+export default Disaster;

@@ -8,9 +8,9 @@ import { Fragment, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-const UserComplaintList = () => {
+const UserDisasterList = () => {
   const [userAuth, setUserAuth] = useState(null);
-	const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState("");
 
   const redirect = useNavigate();
 
@@ -38,7 +38,7 @@ const UserComplaintList = () => {
     };
   }, []);
 
-    const colRef = collection(db, "issue");
+  const colRef = collection(db, "issue");
   const [arr, setArr] = useState([]);
 
   useEffect(() => {
@@ -46,12 +46,11 @@ const UserComplaintList = () => {
       .then((snapshot) => {
         let issues = [];
         snapshot.docs.forEach((doc) => {
-            const dataReceived=({...doc.data()})
-            console.log(userAuth)
-            if (sessionStorage.getItem("userEmail") == dataReceived.owner){
-
-                issues.push({ ...doc.data(), id: doc.id });
-            }
+          const dataReceived = { ...doc.data() };
+          console.log(userAuth);
+          if (sessionStorage.getItem("userEmail") == dataReceived.owner) {
+            issues.push({ ...doc.data(), id: doc.id });
+          }
         });
         setArr(issues);
         console.log(issues);
@@ -76,7 +75,7 @@ const UserComplaintList = () => {
         <Card className="col-span-3">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              Complaint List
+              Disaster List
             </h3>
             <Filter onClick={openModal} className="md:hidden block" />
           </div>
@@ -90,7 +89,7 @@ const UserComplaintList = () => {
                   User
                 </th>
                 <th scope="col" className="md:px-6 px-2 py-3">
-                  Complaint
+                  Disaster
                 </th>
                 <th
                   scope="col"
@@ -112,8 +111,9 @@ const UserComplaintList = () => {
                 </th>
               </tr>
             </thead>
-            {arr && arr.map((values, i) => {
-              return (
+            {arr &&
+              arr.map((values, i) => {
+                return (
                   <tr key={i} className="w-full bg-white border-b">
                     <td
                       scope="row"
@@ -148,13 +148,16 @@ const UserComplaintList = () => {
                       </div>
                     </td>
                     <td className="w-10 text-start px-6 py-4">
-                      <a href={`user-complaint/${values.id}`} className="md:inline-flex py-2 items-center text-base font-light text-blue-700">
-                        <Link2/>
+                      <a
+                        href={`user-disaster/${values.id}`}
+                        className="md:inline-flex py-2 items-center text-base font-light text-blue-700"
+                      >
+                        <Link2 />
                       </a>
                     </td>
                   </tr>
-              );
-            })}
+                );
+              })}
           </table>
         </Card>
         <Card className="md:block hidden relative max-h-[50vh]">
@@ -174,27 +177,33 @@ const UserComplaintList = () => {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >
               <option selected>Choose a Location</option>
-              <option value="US">C</option>
-              <option value="CA">Canada</option>
-              <option value="FR">France</option>
-              <option value="DE">Germany</option>
+              <option value="NSP">Nallasopara</option>
+              <option value="Malad">Malad</option>
+              <option value="Andheri">Andheri</option>
             </select>
 
             <label
               for="countries"
               className="block mt-3 mb-1 text-sm font-medium text-gray-900"
             >
-              Select a Complaint Category
+              Select a Disaster Category
             </label>
             <select
               id="countries"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >
               <option selected>Choose a Category</option>
-              <option value="US">C</option>
-              <option value="CA">Canada</option>
-              <option value="FR">France</option>
-              <option value="DE">Germany</option>
+              <option value="Natural Disaster">Natural Disaster</option>
+              <option value="Biological Disaster">Biological Disaster</option>
+              <option value="Technological Disaster">
+                Technological Disaster
+              </option>
+              <option value="Environmental Disaster">
+                Environmental Disaster
+              </option>
+              <option value="Human-Induced Disaster">
+                Human-Induced Disaster
+              </option>
             </select>
 
             <button
@@ -205,9 +214,9 @@ const UserComplaintList = () => {
               Sort by Count
             </button>
 
-          <div className="absolute bottom-5 right-5 rounded-full p-3 bg-gray-200">
-            <Filter />
-          </div>
+            <div className="absolute bottom-5 right-5 rounded-full p-3 bg-gray-200">
+              <Filter />
+            </div>
           </form>
         </Card>
       </div>
@@ -255,27 +264,35 @@ const UserComplaintList = () => {
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     >
                       <option selected>Choose a Location</option>
-                      <option value="US">C</option>
-                      <option value="CA">Canada</option>
-                      <option value="FR">France</option>
-                      <option value="DE">Germany</option>
+                      <option value="NSP">Nallasopara</option>
+                      <option value="Malad">Malad</option>
+                      <option value="Andheri">Andheri</option>
                     </select>
 
                     <label
                       for="countries"
                       className="block mt-3 mb-1 text-sm font-medium text-gray-900"
                     >
-                      Select a Complaint Category
+                      Select a Disaster Category
                     </label>
                     <select
                       id="countries"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     >
                       <option selected>Choose a Category</option>
-                      <option value="US">C</option>
-                      <option value="CA">Canada</option>
-                      <option value="FR">France</option>
-                      <option value="DE">Germany</option>
+                      <option value="Natural Disaster">Natural Disaster</option>
+                      <option value="Biological Disaster">
+                        Biological Disaster
+                      </option>
+                      <option value="Technological Disaster">
+                        Technological Disaster
+                      </option>
+                      <option value="Environmental Disaster">
+                        Environmental Disaster
+                      </option>
+                      <option value="Human-Induced Disaster">
+                        Human-Induced Disaster
+                      </option>
                     </select>
 
                     <button
@@ -285,13 +302,13 @@ const UserComplaintList = () => {
                       <Sliders size={20} />
                       Sort by Count
                     </button>
-                  <button
-                    onClick={closeModal}
-                    className="absolute bottom-5 right-5 rounded-full p-3 bg-gray-200"
+                    <button
+                      onClick={closeModal}
+                      className="absolute bottom-5 right-5 rounded-full p-3 bg-gray-200"
                     >
-                    <Filter />
-                  </button>
-                      </form>
+                      <Filter />
+                    </button>
+                  </form>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -302,4 +319,4 @@ const UserComplaintList = () => {
   );
 };
 
-export default UserComplaintList;
+export default UserDisasterList;
