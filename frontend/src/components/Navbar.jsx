@@ -4,6 +4,7 @@ import logo from '../assets/kavach.png'
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import axios from "axios";
 
 const Navbar = () => {
   const [userAuth, setUserAuth] = useState(null);
@@ -11,12 +12,15 @@ const Navbar = () => {
   const provider = new GoogleAuthProvider();
   const userSignin = () => {
     signInWithPopup(auth, provider)
-      .then((result) => {
+      .then(async (result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         // The signed-in user info.
         const user = result.user;
+        localStorage.setItem("email", user.email);
+        const res = await axios.post("http://localhost:5000/api/user", { email: user.email });
+        console.log(res.data);
         // console.log(user)
         sessionStorage.setItem("userEmail",user.email)
         sessionStorage.setItem("name",user?.displayName)
@@ -52,8 +56,6 @@ const Navbar = () => {
       listen();
     };
   }, []);
-
-  console.log(userAuth)
 
   const userSignout = () => {
     signOut(auth)

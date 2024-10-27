@@ -15,6 +15,9 @@ import UserDisaster from "./components/UserDisaster";
 import Contact from "./components/Contact";
 import WeatherData from "./components/WeatherData";
 import AddDisaster from "./components/AddDisaster";
+import AddHelp from "./components/AddHelp";
+import AddResource from "./components/AddResource";
+import AddDisasterPage from "./components/AddDisasterPage";
 
 const router = createBrowserRouter([
   {
@@ -134,6 +137,33 @@ const router = createBrowserRouter([
           <div>
             <Nav />
             <Contact />
+          </div>
+        ),
+      },
+      {
+        path: "/add-help",
+        element: (
+          <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
+            <Nav />
+            <AddHelp />
+          </div>
+        ),
+      },
+      {
+        path: "/add-resource",
+        element: (
+          <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
+            <Nav />
+            <AddResource />
+          </div>
+        ),
+      },
+      {
+        path: "/add-disaster-page",
+        element: (
+          <div className="md:min-h-[100vh] min-h-full bg-gray-100 ">
+            <Nav />
+            <AddDisasterPage />
           </div>
         ),
       },
