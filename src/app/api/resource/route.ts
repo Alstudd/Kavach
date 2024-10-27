@@ -7,8 +7,8 @@ export async function GET(req: Request) {
     const requesturl = new URL(req.url);
 
     await connectToDB();
-    const resourceId = requesturl.searchParams.get("id");
-    const type = requesturl.searchParams.get("type");
+    const resourceId = requesturl.searchParams.get("id") ?? false;
+    const type = requesturl.searchParams.get("type") ?? false;
     if (resourceId && type) {
       const resource = await resourceSchema.find({
         $and: [{ _id: resourceId }, { type: type }],

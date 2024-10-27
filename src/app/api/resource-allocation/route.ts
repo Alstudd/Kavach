@@ -3,6 +3,7 @@ import resourceSchema from "@/models/resource";
 import { connectToDB } from "@/util/connectToDB";
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
+import axios from "axios";
 
 export async function GET(req: Request) {
   try {
@@ -31,34 +32,53 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDB();
     const body = await req.json();
-    const { resource_id, disaster_id, quantity } = body;
-
-    // Create resource allocation entry
-    const resourceAllocation = new resourceAllocationSchema({
-      resource_id,
-      disaster_id,
-      quantity,
-    });
-    await resourceAllocation.save({ session });
-
-    // Update resource quantity
-    const resource = await resourceSchema.findByIdAndUpdate(
-      resource_id,
-      { $inc: { quantity: -quantity } },
-      { session, new: true }
+    const { disaster_id } = body;
+    const response = await axios.post(
+      "http://localhost:3000/api/allocation_calculate",
+      {
+        disaster_id: disaster_id,
+      }
     );
-
-    if (!resource) {
-      throw new Error("Resource not found");
+    const data = response.data;
+    if (!data) {
+      throw new Error("Failed to calculate allocations");
     }
+    if (data) {
+      const allocationPromises = data.map(
+        async ({ resource_id, disaster_id, quantity }) => {
+          // Create resource allocation entry
+          const resourceAllocation = new resourceAllocationSchema({
+            resource_id,
+            disaster_id,
+            quantity,
+          });
+          await resourceAllocation.save({ session });
 
-    await session.commitTransaction();
-    session.endSession();
+          // Update resource quantity
+          const resource = await resourceSchema.findByIdAndUpdate(
+            resource_id,
+            { $inc: { quantity: -quantity } },
+            { session, new: true }
+          );
 
-    return Response.json({
-      message: "Resource Allocated Successfully",
-      resourceAllocation,
-    });
+          if (!resource) {
+            throw new Error(`Resource not found for ID: ${resource_id}`);
+          }
+
+          return resourceAllocation;
+        }
+      );
+
+      const createdAllocations = await Promise.all(allocationPromises);
+
+      await session.commitTransaction();
+      session.endSession();
+
+      return NextResponse.json({
+        message: "Resources Allocated Successfully",
+        createdAllocations,
+      });
+    }
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
