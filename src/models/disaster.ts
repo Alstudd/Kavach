@@ -43,6 +43,7 @@ const disasterSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+      default: "on-going",
       enum: ["rescued", "on-going"],
       required: true,
     },

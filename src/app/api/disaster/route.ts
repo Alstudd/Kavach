@@ -54,3 +54,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error });
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    await connectToDB();
+    const body = await req.json();
+    const { disaster_id, status } = body;
+    const disaster = await disasterSchema.findByIdAndUpdate(
+      disaster_id,
+      { status },
+      { new: true }
+    );
+    return Response.json({ message: "Disaster status updated", disaster });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error });
+  }
+}

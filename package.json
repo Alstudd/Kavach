@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@solana/actions": "^1.6.5",
+    "@solana/web3.js": "^1.95.4",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
+    "blinksights-sdk": "^1.0.19",
     "jose": "^5.9.6",
     "kavach": "file:",
     "mongoose": "^8.7.3",
