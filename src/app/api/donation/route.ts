@@ -1,6 +1,7 @@
 import { connectToDB } from "@/util/connectToDB";
 import { NextRequest, NextResponse } from "next/server";
 import donationSchema from "@/models/donation";
+import donationBlinkSchema from "@/models/donation_blink";
 
 export async function GET(req: Request) {
   try {
