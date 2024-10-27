@@ -1,6 +1,18 @@
 import { connectToDB } from "@/util/connectToDB";
 import { NextRequest, NextResponse } from "next/server";
-import donationBlinkSchema from "@/models/donation_blink";
+import donationSchema from "@/models/donation";
+
+export async function GET(req: Request) {
+  try {
+    await connectToDB();
+
+    const blink = await donationSchema.find();
+    return Response.json(blink);
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error });
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
